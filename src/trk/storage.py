@@ -4,7 +4,6 @@ import json
 import os
 from pathlib import Path
 
-from .exceptions import NoTargetSpecified, TargetNotFound
 from .state import TrackingState
 
 
@@ -20,8 +19,6 @@ def state_path(target: str) -> Path:
 
 def load(target: str) -> TrackingState:
     p = state_path(target)
-    if not p.exists():
-        raise TargetNotFound(target)
     with p.open() as f:
         return TrackingState.from_dict(json.load(f))
 
@@ -39,25 +36,4 @@ def list_targets() -> list[str]:
     return sorted(p.stem for p in data_dir().glob("*.json"))
 
 
-def resolve_target(explicit: str | None) -> str:
-    if explicit:
-        return explicit
 
-    # Check for local state.json symlink/file
-    local = Path("state.json")
-    if local.exists():
-        try:
-            with local.open() as f:
-                d = json.load(f)
-            t = d.get("target")
-            if t:
-                return t
-        except (json.JSONDecodeError, OSError):
-            pass
-
-    # Check environment variable
-    env = os.environ.get("HYP_TARGET")
-    if env:
-        return env
-
-    raise NoTargetSpecified()
