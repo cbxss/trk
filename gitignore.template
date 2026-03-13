@@ -1,0 +1,2 @@
+# trk state file (symlink to ~/.local/share/trk/<target>.json)
+state.json
