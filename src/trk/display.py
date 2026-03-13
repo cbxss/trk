@@ -138,13 +138,13 @@ def show(state: TrackingState, show_closed: bool = False, show_confirmations: bo
             lines.append(f"QUEUE: {qname} [{n_done}/{total} done, {len(pending)} pending]")
             lines.append(f"  next: {pending[0].id} {pending[0].desc}")
             if len(pending) > 1:
-                lines.append(f"  +{len(pending) - 1} more pending — `hyp qshow -q {qname}`")
+                lines.append(f"  +{len(pending) - 1} more pending — `trk qshow -q {qname}`")
 
     print("\n".join(lines))
 
 
 def show_queue(items: list[QueueItem], queue_name: str) -> None:
-    """Show a single queue for `hyp qshow -q <name>`."""
+    """Show a single queue for `trk qshow -q <name>`."""
     SYMS = {"pending": "[ ]", "done": "[x]", "skipped": "[-]"}
     pending = sum(1 for i in items if i.status == "pending")
     total = len(items)
@@ -156,7 +156,7 @@ def show_queue(items: list[QueueItem], queue_name: str) -> None:
 
 
 def show_all_queues(queues: dict[str, list[QueueItem]]) -> None:
-    """Show all queues for `hyp qshow`."""
+    """Show all queues for `trk qshow`."""
     SYMS = {"pending": "[ ]", "done": "[x]", "skipped": "[-]"}
     for qname, items in queues.items():
         pending = sum(1 for i in items if i.status == "pending")
