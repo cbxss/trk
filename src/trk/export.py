@@ -1,9 +1,10 @@
+"""Export state to various formats."""
 from __future__ import annotations
 
 import json
 from collections import defaultdict
 
-from .state import Attempt, QueueItem, TrackingState
+from .state import Attempt, TrackingState
 
 ATTEMPT_SYMS = {"pass": "✓", "fail": "✗", "partial": "~"}
 
@@ -29,6 +30,7 @@ def _attempts_md(attempts: list[Attempt]) -> list[str]:
 
 
 def to_markdown(state: TrackingState) -> str:
+    """Export state as Markdown."""
     lines = []
     lines.append(f"# Security Research: {state.target}")
     parts = [f"**Updated:** {state.updated}"]
@@ -99,4 +101,5 @@ def to_markdown(state: TrackingState) -> str:
 
 
 def to_json(state: TrackingState) -> str:
+    """Export state as JSON."""
     return json.dumps(state.to_dict(), indent=2) + "\n"

@@ -1,3 +1,4 @@
+"""Display state in terminal."""
 from __future__ import annotations
 
 from collections import defaultdict
@@ -10,7 +11,7 @@ SEV_SHORT = {"critical": "CRIT", "high": "HIGH", "medium": "MED", "low": "LOW", 
 
 
 def _tries_line(attempts: list[Attempt]) -> str:
-    """Compact single-line tries grouped by tag: [tag]: pay✓  pay✗ | [tag2]: ..."""
+    """Compact single-line tries grouped by tag."""
     groups: dict[str, list[Attempt]] = defaultdict(list)
     for a in attempts:
         groups[a.tag or ""].append(a)
@@ -23,24 +24,13 @@ def _tries_line(attempts: list[Attempt]) -> str:
 
 
 def show(state: TrackingState, show_closed: bool = False, show_confirmations: bool = False, limit: int | None = None) -> None:
-    """
-    Compact, AI-optimised output.
-
-    Design goals:
-    - Full fidelity on OPEN items (no truncation — agent needs full context)
-    - Minimal footprint on CLOSED/resolved items (summary only by default)
-    - One logical item per line where possible
-    - show_closed=True adds closed hypothesis details + notes
-    - limit=N shows only the N most recent open items
-    """
+    """Display state in compact format."""
     lines = []
 
     # ── header ────────────────────────────────────────────────────────────────
     lines.append(f"TARGET: {state.target}  UPDATED: {state.updated}")
     if state.blocked_on:
         lines.append(f"BLOCKED: {state.blocked_on}")
-
-    # last_action — full text, critical session context for AI
     if state.last_action:
         lines.append(f"LAST: {state.last_action}")
 
@@ -51,7 +41,7 @@ def show(state: TrackingState, show_closed: bool = False, show_confirmations: bo
             tag = f" [{n.hyp_id}]" if n.hyp_id else ""
             lines.append(f"  [{n.ts}]{tag} {n.text}")
 
-    # ── confirmations (active findings) ───────────────────────────────────────
+    # ── confirmations ─────────────────────────────────────────────────────────
     active_confirmations = [c for c in state.confirmations if c.status not in ("closed", "false_positive")]
     closed_confirmations = [c for c in state.confirmations if c.status in ("closed", "false_positive")]
 
@@ -64,7 +54,6 @@ def show(state: TrackingState, show_closed: bool = False, show_confirmations: bo
                 if c.from_hypothesis:
                     line += f"  (from {c.from_hypothesis})"
                 lines.append(line)
-                # Notes inline — no truncation, agents need full notes
                 if c.notes:
                     lines.append(f"    notes: {c.notes}")
         else:
@@ -84,15 +73,11 @@ def show(state: TrackingState, show_closed: bool = False, show_confirmations: bo
     # ── open hypotheses ────────────────────────────────────────────────────────
     all_open = [h for h in state.hypotheses if h.status == "open"]
     
-    # Apply limit if specified (show most recent N items by created timestamp)
     total_open = len(all_open)
     if limit and limit < total_open:
-        # Sort by created timestamp descending to get most recent, take first N
         recent = sorted(all_open, key=lambda h: h.created or "", reverse=True)[:limit]
-        # Then sort by priority for display
         open_hyps = sorted(recent, key=lambda h: (h.priority or 999, h.id))
     else:
-        # Normal priority-sorted view
         open_hyps = sorted(all_open, key=lambda h: (h.priority or 999, h.id))
         
     if open_hyps:
@@ -102,7 +87,6 @@ def show(state: TrackingState, show_closed: bool = False, show_confirmations: bo
         lines.append(header)
         for h in open_hyps:
             pri = f"P{h.priority}" if h.priority else "--"
-            # Full desc — no truncation
             lines.append(f"  {h.id}[{pri}] {h.desc}")
             if h.next_action:
                 lines.append(f"    next: {h.next_action}")
@@ -115,7 +99,7 @@ def show(state: TrackingState, show_closed: bool = False, show_confirmations: bo
         ids = " ".join(h.id for h in closed)
         lines.append(f"CLOSED({len(closed)}): {ids}   (run `trk show --closed` for details)")
 
-    # ── closed details (opt-in) ───────────────────────────────────────────────
+    # ── closed details ────────────────────────────────────────────────────────
     if show_closed and closed:
         lines.append("CLOSED DETAILS:")
         for h in closed:

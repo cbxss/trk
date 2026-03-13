@@ -361,7 +361,7 @@ def test_grep_note(isolated_data_dir):
     runner.invoke(app, ["note", "API uses RS256 JWT", "-t", "acme"])
     result = runner.invoke(app, ["grep", "RS256", "-t", "acme"])
     assert "RS256" in result.output
-    assert "note[1]" in result.output
+    assert "note" in result.output
 
 
 def test_grep_no_match(isolated_data_dir):

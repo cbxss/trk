@@ -37,6 +37,14 @@ class QueueItem:
     created: ISODate | None = None
     done_ts: ISODate | None = None
 
+    def __post_init__(self):
+        if not self.id.startswith("Q"):
+            raise ValueError(f"Queue item ID must start with 'Q', got: {self.id}")
+        if not self.desc.strip():
+            raise ValueError("Queue item description cannot be empty")
+        if not self.queue.strip():
+            raise ValueError("Queue name cannot be empty")
+
     def to_dict(self) -> dict:
         return {
             "id": self.id,
@@ -69,6 +77,10 @@ class Attempt:
     status: AttemptStatus = "fail"
     ts: ISODate | None = None
 
+    def __post_init__(self):
+        if not self.payload.strip():
+            raise ValueError("Attempt payload cannot be empty")
+
     def to_dict(self) -> dict:
         return {
             "payload": self.payload,
@@ -100,6 +112,14 @@ class Hypothesis:
     closed: ISODate | None = None
     created: ISODate | None = None
     attempts: list[Attempt] = field(default_factory=list)
+
+    def __post_init__(self):
+        if not self.id.startswith("H"):
+            raise ValueError(f"Hypothesis ID must start with 'H', got: {self.id}")
+        if not self.desc.strip():
+            raise ValueError("Hypothesis description cannot be empty")
+        if self.priority is not None and not (1 <= self.priority <= 3):
+            raise ValueError(f"Hypothesis priority must be 1-3, got: {self.priority}")
 
     def to_dict(self) -> dict:
         return {
@@ -138,6 +158,12 @@ class Confirmation:
     notes: str | None = None
     from_hypothesis: HypothesisID | None = None
 
+    def __post_init__(self):
+        if not self.id.startswith("C"):
+            raise ValueError(f"Confirmation ID must start with 'C', got: {self.id}")
+        if not self.title.strip():
+            raise ValueError("Confirmation title cannot be empty")
+
     def to_dict(self) -> dict:
         return {
             "id": self.id,
@@ -165,6 +191,10 @@ class Note:
     text: str
     ts: ISODate
     hyp_id: HypothesisID | None = None
+
+    def __post_init__(self):
+        if not self.text.strip():
+            raise ValueError("Note text cannot be empty")
 
     def to_dict(self) -> dict:
         return {

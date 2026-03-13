@@ -10,9 +10,8 @@ Short, fast, domain-agnostic. Based on the [pi-autoresearch](https://github.com/
 # Install CLI
 uv tool install ~/Code/trk
 
-# Install trk-create skill (global)
-mkdir -p ~/.pi/agent/skills/trk-create
-cp .agents/skills/trk-create/SKILL.md ~/.pi/agent/skills/trk-create/
+# Symlink trk-create skill (global)
+ln -sf ~/Code/trk/.agents/skills/trk-create ~/.pi/agent/skills/trk-create
 ```
 
 ## Usage

@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 
+from .exceptions import NoTargetSpecified, TargetNotFound
 from .state import TrackingState
 
 
@@ -20,7 +21,7 @@ def state_path(target: str) -> Path:
 def load(target: str) -> TrackingState:
     p = state_path(target)
     if not p.exists():
-        raise FileNotFoundError(f"No state file for target '{target}'. Run: trk init {target}")
+        raise TargetNotFound(target)
     with p.open() as f:
         return TrackingState.from_dict(json.load(f))
 
@@ -59,6 +60,4 @@ def resolve_target(explicit: str | None) -> str:
     if env:
         return env
 
-    raise ValueError(
-        "No target specified. Use -t/--target, set HYP_TARGET, or run from a directory with state.json"
-    )
+    raise NoTargetSpecified()

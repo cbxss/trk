@@ -5,9 +5,9 @@ Generic work tracker. Domain-agnostic CLI + project-local skills for vocabulary.
 ## Quick Start
 
 ```bash
-uv run pytest tests/ -v              # Run 68 tests
-uv tool install --reinstall ~/Code/trk  # Install CLI globally
-cp .agents/skills/trk-create/SKILL.md ~/.pi/agent/skills/trk-create/  # Sync skill
+uv run pytest tests/ -v                                             # Run 68 tests
+uv tool install --reinstall ~/Code/trk                               # Install CLI globally
+ln -sf ~/Code/trk/.agents/skills/trk-create ~/.pi/agent/skills/      # Symlink skill globally
 ```
 
 ## Structure
@@ -72,9 +72,9 @@ Agent reads generated skill → uses domain terms (hypothesis vs migration vs bu
 ## After Changes
 
 ```bash
-uv run pytest tests/ -v                    # Tests pass?
-uv tool install --reinstall ~/Code/trk     # Reinstall CLI
-cp .agents/skills/trk-create/SKILL.md ~/.pi/agent/skills/trk-create/  # Sync skill
+uv run pytest tests/ -v                                            # Tests pass?
+uv tool install --reinstall ~/Code/trk                              # Reinstall CLI
+ln -sf ~/Code/trk/.agents/skills/trk-create ~/.pi/agent/skills/     # Symlink skill (first time only)
 ```
 
 ## Common Issues
