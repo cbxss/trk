@@ -5,7 +5,7 @@ import pytest
 from typer.testing import CliRunner
 
 from trk.cli import app
-from hyp import storage
+from trk import storage
 
 runner = CliRunner()
 
