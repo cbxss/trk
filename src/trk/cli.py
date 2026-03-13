@@ -85,13 +85,14 @@ def show(
     closed: bool = typer.Option(False, "--closed", help="Show closed hypothesis conclusions"),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
     show_confirmations: bool = typer.Option(False, "--confirmations", help="Show full confirmation details"),
+    limit: Optional[int] = typer.Option(None, "--limit", "-n", help="Show only the N most recent open items"),
 ):
     """Show current research state."""
     state = _get(target)
     if json_output:
         typer.echo(export.to_json(state), nl=False)
     else:
-        display.show(state, show_closed=closed, show_confirmations=show_confirmations)
+        display.show(state, show_closed=closed, show_confirmations=show_confirmations, limit=limit)
 
 
 # ---------------------------------------------------------------------------

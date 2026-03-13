@@ -22,7 +22,7 @@ def _tries_line(attempts: list[Attempt]) -> str:
     return " | ".join(parts)
 
 
-def show(state: TrackingState, show_closed: bool = False, show_confirmations: bool = False) -> None:
+def show(state: TrackingState, show_closed: bool = False, show_confirmations: bool = False, limit: int | None = None) -> None:
     """
     Compact, AI-optimised output.
 
@@ -31,6 +31,7 @@ def show(state: TrackingState, show_closed: bool = False, show_confirmations: bo
     - Minimal footprint on CLOSED/resolved items (summary only by default)
     - One logical item per line where possible
     - show_closed=True adds closed hypothesis details + notes
+    - limit=N shows only the N most recent open items
     """
     lines = []
 
@@ -81,12 +82,26 @@ def show(state: TrackingState, show_closed: bool = False, show_confirmations: bo
         lines.append(f"CONFIRMATIONS(closed/fp): {ids}")
 
     # ── open hypotheses ────────────────────────────────────────────────────────
-    open_hyps = sorted(
-        [h for h in state.hypotheses if h.status == "open"],
-        key=lambda h: (h.priority or 999, h.id),
-    )
+    all_open = [h for h in state.hypotheses if h.status == "open"]
+    
+    # Apply limit if specified (show most recent N items by ID)
+    total_open = len(all_open)
+    if limit and limit < total_open:
+        # Sort by numeric ID descending to get most recent, take first N
+        def id_num(h):
+            return int(h.id[1:]) if h.id[1:].isdigit() else 0
+        recent = sorted(all_open, key=id_num, reverse=True)[:limit]
+        # Then sort by priority for display
+        open_hyps = sorted(recent, key=lambda h: (h.priority or 999, h.id))
+    else:
+        # Normal priority-sorted view
+        open_hyps = sorted(all_open, key=lambda h: (h.priority or 999, h.id))
+        
     if open_hyps:
-        lines.append("OPEN HYPOTHESES (by priority):")
+        header = "OPEN HYPOTHESES (by priority):"
+        if limit and limit < total_open:
+            header += f" [showing {limit} of {total_open}]"
+        lines.append(header)
         for h in open_hyps:
             pri = f"P{h.priority}" if h.priority else "--"
             # Full desc — no truncation
@@ -100,7 +115,7 @@ def show(state: TrackingState, show_closed: bool = False, show_confirmations: bo
     closed = [h for h in state.hypotheses if h.status in ("closed", "confirmed")]
     if closed:
         ids = " ".join(h.id for h in closed)
-        lines.append(f"CLOSED({len(closed)}): {ids}   (run `hyp show --closed` for details)")
+        lines.append(f"CLOSED({len(closed)}): {ids}   (run `trk show --closed` for details)")
 
     # ── closed details (opt-in) ───────────────────────────────────────────────
     if show_closed and closed:
