@@ -12,8 +12,8 @@ runner = CliRunner()
 
 @pytest.fixture(autouse=True)
 def isolated_data_dir(monkeypatch, tmp_path):
-    """Redirect hyp data dir to a temp directory for each test."""
-    data = tmp_path / "hyp"
+    """Redirect trk data dir to a temp directory for each test."""
+    data = tmp_path / "trk"
     data.mkdir()
     monkeypatch.setattr(storage, "data_dir", lambda: data)
     # Also patch state_path to use the temp dir

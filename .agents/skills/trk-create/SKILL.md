@@ -224,4 +224,4 @@ Now when you work:
 - **Pi loads it automatically** when in that directory
 - **Agent reads it to understand domain vocabulary**
 - **Each project can have its own customized domain**
-- **The `track` CLI remains 100% generic**
+- **The `trk` CLI remains 100% generic**

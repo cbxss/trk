@@ -418,7 +418,7 @@ def qbulk(
     """Bulk-add queue items from stdin — one description per line.
 
     Example:
-        track qbulk --queue listeners << 'EOF'
+        trk qbulk --queue listeners << 'EOF'
         chunk_abc.js L123 — if (e.data.type === 'navigate') location.href = e.data.url
         chunk_def.js L456 — el.innerHTML = event.data
         EOF
@@ -592,8 +592,8 @@ def note(
     """Add a free-form note to the target, or remove one with --rm <index>.
 
     Usage:
-      track note "text"          — global note
-      track note H39 "text"      — note linked to hypothesis H39
+      trk note "text"          — global note
+      trk note H39 "text"      — note linked to hypothesis H39
     """
     state = _get(target)
     if rm_index is not None:
@@ -605,7 +605,7 @@ def note(
         _save(state)
         typer.echo(f"[trk] removed note: {removed.text}")
         return
-    # Resolve args: `track note H39 "text"` or `track note "text"`
+    # Resolve args: `trk note H39 "text"` or `trk note "text"`
     if text is not None:
         # Two positional args: first is an ID, second is the text
         hyp_id = id_or_text.upper() if id_or_text else None
