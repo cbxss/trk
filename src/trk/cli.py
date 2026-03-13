@@ -13,7 +13,7 @@ from . import storage, display, export
 from .state import Attempt, Confirmation, Hypothesis, Note, QueueItem, TrackingState
 
 app = typer.Typer(
-    name="track",
+    name="trk",
     help="Generic work tracker - adapt to any domain",
     no_args_is_help=True,
 )
@@ -30,7 +30,7 @@ def _get(target: Optional[str]) -> TrackingState:
 
 def _save(state: TrackingState) -> None:
     storage.save(state.target, state)
-    typer.echo(f"[track] saved: {state.target}", err=True)
+    typer.echo(f"[trk] saved: {state.target}", err=True)
 
 
 # ---------------------------------------------------------------------------
@@ -42,7 +42,7 @@ def targets():
     """List all research targets."""
     ts = storage.list_targets()
     if not ts:
-        typer.echo("No targets yet. Run: track init <name>")
+        typer.echo("No targets yet. Run: trk init <name>")
         return
     for t in ts:
         typer.echo(t)
@@ -65,14 +65,14 @@ def init(
 
     state = TrackingState(target=name, updated=_today())
     storage.save(name, state)
-    typer.echo(f"[track] initialized: {name} → {p}", err=True)
+    typer.echo(f"[trk] initialized: {name} → {p}", err=True)
 
     if link:
         local = Path("state.json")
         if local.exists() or local.is_symlink():
             local.unlink()
         local.symlink_to(p)
-        typer.echo(f"[track] linked: ./state.json → {p}", err=True)
+        typer.echo(f"[trk] linked: ./state.json → {p}", err=True)
 
 
 # ---------------------------------------------------------------------------
@@ -119,7 +119,7 @@ def new(
     state.hypotheses.append(h)
     state.updated = _today()
     _save(state)
-    typer.echo(f"[track] added {hid}: {desc}")
+    typer.echo(f"[trk] added {hid}: {desc}")
 
 
 # ---------------------------------------------------------------------------
@@ -143,7 +143,7 @@ def close(
     h.closed = _today()
     state.updated = _today()
     _save(state)
-    typer.echo(f"[track] closed {h.id}: {conclusion}")
+    typer.echo(f"[trk] closed {h.id}: {conclusion}")
 
 
 # ---------------------------------------------------------------------------
@@ -183,10 +183,10 @@ def confirm(
             from_hypothesis=h.id,
         )
         state.confirmations.append(c)
-        typer.echo(f"[track] created {cid}: {title}")
+        typer.echo(f"[trk] created {cid}: {title}")
 
     _save(state)
-    typer.echo(f"[track] confirmed {h.id}: {conclusion}")
+    typer.echo(f"[trk] confirmed {h.id}: {conclusion}")
 
 
 # ---------------------------------------------------------------------------
@@ -212,7 +212,7 @@ def confirmation(
         c.notes = notes
     state.updated = _today()
     _save(state)
-    typer.echo(f"[track] updated {c.id}")
+    typer.echo(f"[trk] updated {c.id}")
 
 
 # ---------------------------------------------------------------------------
@@ -229,7 +229,7 @@ def last(
     state.last_action = action
     state.updated = _today()
     _save(state)
-    typer.echo(f"[track] last_action: {action}")
+    typer.echo(f"[trk] last_action: {action}")
 
 
 # ---------------------------------------------------------------------------
@@ -246,7 +246,7 @@ def block(
     state.blocked_on = reason
     state.updated = _today()
     _save(state)
-    typer.echo(f"[track] blocked: {reason}")
+    typer.echo(f"[trk] blocked: {reason}")
 
 
 @app.command()
@@ -258,7 +258,7 @@ def unblock(
     state.blocked_on = None
     state.updated = _today()
     _save(state)
-    typer.echo("[track] unblocked")
+    typer.echo("[trk] unblocked")
 
 
 # ---------------------------------------------------------------------------
@@ -292,7 +292,7 @@ def try_cmd(
     _save(state)
     sym = {"pass": "✓", "fail": "✗", "partial": "~"}[status]
     tag_str = f"[{tag}] " if tag else ""
-    typer.echo(f"[track] {h.id} {tag_str}{payload} {sym}" + (f" → {result}" if result else ""))
+    typer.echo(f"[trk] {h.id} {tag_str}{payload} {sym}" + (f" → {result}" if result else ""))
 
 
 # ---------------------------------------------------------------------------
@@ -341,7 +341,7 @@ def qadd(
     state.queues[queue].append(item)
     state.updated = _today()
     _save(state)
-    typer.echo(f"[track] queued {qid}[{queue}]: {desc}")
+    typer.echo(f"[trk] queued {qid}[{queue}]: {desc}")
 
 
 @app.command()
@@ -365,7 +365,7 @@ def qdone(
     state.updated = _today()
     _save(state)
     hyp_str = f" → {hyp_id}" if hyp_id else ""
-    typer.echo(f"[track] done {qid}{hyp_str}")
+    typer.echo(f"[trk] done {qid}{hyp_str}")
 
 
 @app.command()
@@ -386,7 +386,7 @@ def qskip(
         state.notes.append(Note(text=note, ts=_today()))
     state.updated = _today()
     _save(state)
-    typer.echo(f"[track] skipped {qid}")
+    typer.echo(f"[trk] skipped {qid}")
 
 
 @app.command()
@@ -436,7 +436,7 @@ def qbulk(
         added.append(qid)
     state.updated = _today()
     _save(state)
-    typer.echo(f"[track] queued {', '.join(added)} → queue '{queue}'")
+    typer.echo(f"[trk] queued {', '.join(added)} → queue '{queue}'")
 
 
 # ---------------------------------------------------------------------------
@@ -468,7 +468,7 @@ def update(
         h.desc = desc
     state.updated = _today()
     _save(state)
-    typer.echo(f"[track] updated {h.id}")
+    typer.echo(f"[trk] updated {h.id}")
 
 
 # ---------------------------------------------------------------------------
@@ -542,7 +542,7 @@ def reopen(
         h.next_action = next_action
     state.updated = _today()
     _save(state)
-    typer.echo(f"[track] reopened {hid} (priority {priority})")
+    typer.echo(f"[trk] reopened {hid} (priority {priority})")
 
 
 @app.command()
@@ -562,7 +562,7 @@ def rm(
         state.hypotheses.remove(h)
         state.updated = _today()
         _save(state)
-        typer.echo(f"[track] removed {item_id}")
+        typer.echo(f"[trk] removed {item_id}")
     elif item_id_upper.startswith("C"):
         c = state.get_confirmation(item_id)
         if not c:
@@ -571,7 +571,7 @@ def rm(
         state.confirmations.remove(c)
         state.updated = _today()
         _save(state)
-        typer.echo(f"[track] removed {item_id}")
+        typer.echo(f"[trk] removed {item_id}")
     else:
         typer.echo(f"Invalid ID '{item_id}' — must start with H or C", err=True)
         raise typer.Exit(1)
@@ -602,7 +602,7 @@ def note(
         removed = state.notes.pop(rm_index - 1)
         state.updated = _today()
         _save(state)
-        typer.echo(f"[track] removed note: {removed.text}")
+        typer.echo(f"[trk] removed note: {removed.text}")
         return
     # Resolve args: `track note H39 "text"` or `track note "text"`
     if text is not None:
@@ -620,7 +620,7 @@ def note(
     state.updated = _today()
     _save(state)
     tag = f" (linked to {hyp_id})" if hyp_id else ""
-    typer.echo(f"[track] note added{tag}")
+    typer.echo(f"[trk] note added{tag}")
 
 
 @app.command()

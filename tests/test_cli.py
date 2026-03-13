@@ -4,7 +4,7 @@ import json
 import pytest
 from typer.testing import CliRunner
 
-from track.cli import app
+from trk.cli import app
 from hyp import storage
 
 runner = CliRunner()

@@ -2,9 +2,9 @@
 
 ## 2026-03-13 - Initial Release
 
-### 🎯 Generic Track CLI
+### 🎯 Generic Trk CLI
 
-Domain-agnostic work tracker with these core entities:
+Domain-agnostic work trker with these core entities:
 - **WorkItem** (H1, H2...) — thing being worked on
 - **Confirmation** (C1, C2...) — successful completion
 - **Attempt** — test/validation/try
@@ -13,14 +13,14 @@ Domain-agnostic work tracker with these core entities:
 
 Commands:
 ```bash
-track init <target>
-track new --desc "..."
-track try <ID> "attempt" --result "..."
-track close <ID> --conclusion "..."
-track confirm <ID> --conclusion "..." [--title "..."]
-track qadd --desc "..."
-track note "observation"
-track grep "pattern"
+trk init <target>
+trk new --desc "..."
+trk try <ID> "attempt" --result "..."
+trk close <ID> --conclusion "..."
+trk confirm <ID> --conclusion "..." [--title "..."]
+trk qadd --desc "..."
+trk note "observation"
+trk grep "pattern"
 ```
 
 ### 🎨 Domain Adaptation Pattern
@@ -28,12 +28,12 @@ track grep "pattern"
 Following the [pi-autoresearch](https://github.com/davebcn87/pi-autoresearch) pattern:
 
 **Generic Infrastructure:**
-- `track` CLI — 100% domain-agnostic
-- Stores state at `~/.local/share/track/<target>.json`
+- `trk` CLI — 100% domain-agnostic
+- Stores state at `~/.local/share/trk/<target>.json`
 - All commands work identically regardless of domain
 
 **Domain Specialization:**
-- `track-create` skill (install globally) — asks domain questions
+- `trk-create` skill (install globally) — asks domain questions
 - Generates `.agents/skills/<domain>/SKILL.md` (project-local)
 - Teaches agent domain vocabulary and workflows
 
@@ -45,22 +45,22 @@ Following the [pi-autoresearch](https://github.com/davebcn87/pi-autoresearch) pa
 ### 📦 Installation
 
 ```bash
-# Install track CLI globally
-uv tool install ~/Code/track
+# Install trk CLI globally
+uv tool install ~/Code/trk
 
-# Install track-create skill globally
-mkdir -p ~/.pi/agent/skills/track-create
-cp .agents/skills/track-create/SKILL.md ~/.pi/agent/skills/track-create/
+# Install trk-create skill globally
+mkdir -p ~/.pi/agent/skills/trk-create
+cp .agents/skills/trk-create/SKILL.md ~/.pi/agent/skills/trk-create/
 ```
 
 ### 🔄 Workflow
 
 ```
-1. User: "start tracking security research"
-2. Agent (via /skill:track-create):
+1. User: "start trking security research"
+2. Agent (via /skill:trk-create):
    - Asks domain questions
    - Writes .agents/skills/security-research/SKILL.md
-   - Calls track init doordash
+   - Calls trk init doordash
 3. Agent uses domain vocabulary:
    - "Creating hypothesis H1" (not "work item")
    - "Recording payload attempt" (not "attempt")
@@ -72,7 +72,7 @@ cp .agents/skills/track-create/SKILL.md ~/.pi/agent/skills/track-create/
 
 ```
 ┌──────────────────────────────────┐
-│  Skill: track-create (global)     │
+│  Skill: trk-create (global)     │
 │  Asks: domain, target, terms       │
 │  Writes: .agents/skills/<d>/      │
 └──────────────────────────────────┘
@@ -90,15 +90,15 @@ cp .agents/skills/track-create/SKILL.md ~/.pi/agent/skills/track-create/
    Agent uses domain terms
               ↓
 ┌──────────────────────────────────┐
-│  Track CLI (generic)               │
-│  track new, track try, track...    │
-│  ~/.local/share/track/<t>.json     │
+│  Trk CLI (generic)               │
+│  trk new, trk try, trk...    │
+│  ~/.local/share/trk/<t>.json     │
 └──────────────────────────────────┘
 ```
 
 ### 🔑 Key Differences from hyp
 
-| Feature | hyp | track |
+| Feature | hyp | trk |
 |---------|-----|-------|
 | Domain | Security research (hardcoded) | Any domain (via skills) |
 | Terminology | hypothesis, vulnerability, payload | Defined by generated skill |

@@ -1,6 +1,6 @@
 """Tests for state.py dataclass models."""
 import pytest
-from track.state import Hypothesis, Confirmation, TrackingState
+from trk.state import Hypothesis, Confirmation, TrackingState
 
 
 def make_state() -> TrackingState:
@@ -101,7 +101,7 @@ def test_confirmation_roundtrip():
 
 
 def test_notes_roundtrip():
-    from track.state import Note
+    from trk.state import Note
     s = make_state()
     s.notes = [Note(text="API uses RS256 JWT", ts="2026-02-20")]
     s2 = TrackingState.from_dict(s.to_dict())

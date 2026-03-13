@@ -1,7 +1,7 @@
 """Tests for export.py."""
 import json
-from track.state import TrackingState, Hypothesis, Confirmation
-from track.export import to_markdown, to_json
+from trk.state import TrackingState, Hypothesis, Confirmation
+from trk.export import to_markdown, to_json
 
 
 def make_rich_state() -> TrackingState:

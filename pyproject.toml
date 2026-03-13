@@ -1,7 +1,7 @@
 [project]
-name = "track"
+name = "trk"
 version = "0.1.0"
-description = "Generic work tracker - adapt to any domain (research, migrations, debugging)"
+description = "Generic work tracker - adapt to any domain via skills"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -10,14 +10,14 @@ dependencies = [
 ]
 
 [project.scripts]
-track = "track.cli:app"
+trk = "trk.cli:app"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/track"]
+packages = ["src/trk"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -8,7 +8,7 @@ from .state import TrackingState
 
 
 def data_dir() -> Path:
-    d = Path.home() / ".local" / "share" / "track"
+    d = Path.home() / ".local" / "share" / "trk"
     d.mkdir(parents=True, exist_ok=True)
     return d
 
@@ -20,7 +20,7 @@ def state_path(target: str) -> Path:
 def load(target: str) -> TrackingState:
     p = state_path(target)
     if not p.exists():
-        raise FileNotFoundError(f"No state file for target '{target}'. Run: track init {target}")
+        raise FileNotFoundError(f"No state file for target '{target}'. Run: trk init {target}")
     with p.open() as f:
         return TrackingState.from_dict(json.load(f))
 
