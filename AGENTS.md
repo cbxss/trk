@@ -14,58 +14,41 @@ ln -sf ~/Code/trk/.agents/skills/trk-create ~/.pi/agent/skills/      # Symlink s
 
 ```
 src/trk/
-  state.py    - Data model (WorkItem, Confirmation, Attempt, Note, Queue)
-  cli.py      - Commands (new, try, confirm, qadd, show, grep...)
-  storage.py  - Load/save at ~/.local/share/trk/<target>.json
-  display.py  - Show output
-  export.py   - Markdown/JSON export
-
-.agents/skills/trk-create/  - Generates domain-specific skills in projects
-tests/                       - 68 tests
+  cli.py      - All commands (597 lines)
+  state.py    - Data models (309 lines)
+  storage.py  - Load/save JSON (39 lines)
+  display.py  - Terminal output (153 lines)
+  export.py   - Markdown/JSON export (105 lines)
 ```
+
+**Total: 1,210 lines. Everything in one file. Dead simple.**
 
 ## Key Patterns
 
 **Always use timestamps:**
 ```python
 from datetime import datetime
-created = datetime.now().isoformat(timespec='seconds')  # "2026-03-13T14:10:08"
+created = datetime.now().isoformat(timespec='seconds')  # "2026-03-13T14:58:01"
 ```
 
 **Always save after modifying state:**
 ```python
 state = _get(target)
 state.hypotheses.append(h)
-state.updated = _today()
-_save(state)  # Don't forget!
+_save(state)  # Updates timestamp + saves
 ```
 
 **Type aliases for clarity:**
 ```python
 type HypothesisID = str  # "H1", "H2"
-type ISODate = str       # "2026-03-13T14:10:08"
-```
-
-## Adding Commands
-
-```python
-@app.command()
-def mycommand(
-    target: Optional[str] = typer.Option(None, "-t", "--target"),
-):
-    """Description."""
-    state = _get(target)
-    # do work
-    state.updated = _today()
-    _save(state)
-    typer.echo("[trk] done")
+type ISODate = str       # "2026-03-13T14:58:01"
 ```
 
 ## Domain Adaptation Pattern
 
 1. **Generic CLI** - `trk` works same for all domains
 2. **Global skill** - `~/.pi/agent/skills/trk-create/` asks questions
-3. **Generated skill** - `.agents/skills/<domain>/SKILL.md` in project teaches vocabulary
+3. **Generated skill** - `.agents/skills/<domain>/SKILL.md` teaches vocabulary
 
 Agent reads generated skill → uses domain terms (hypothesis vs migration vs bug).
 
@@ -74,11 +57,9 @@ Agent reads generated skill → uses domain terms (hypothesis vs migration vs bu
 ```bash
 uv run pytest tests/ -v                                            # Tests pass?
 uv tool install --reinstall ~/Code/trk                              # Reinstall CLI
-ln -sf ~/Code/trk/.agents/skills/trk-create ~/.pi/agent/skills/     # Symlink skill (first time only)
 ```
 
 ## Common Issues
 
-**Import errors:** `grep -r "from hyp" tests/` then fix to `from trk`  
-**Tests fail:** `uv pip install pytest` in venv  
-**State not found:** `ls ~/.local/share/trk/` - run `trk init <target>` if missing
+**State not found:** `ls ~/.local/share/trk/` - run `trk init <target>` if missing  
+**Tests fail:** All in `tests/test_cli.py`, `tests/test_state.py`, `tests/test_export.py`
