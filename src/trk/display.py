@@ -84,13 +84,11 @@ def show(state: TrackingState, show_closed: bool = False, show_confirmations: bo
     # ── open hypotheses ────────────────────────────────────────────────────────
     all_open = [h for h in state.hypotheses if h.status == "open"]
     
-    # Apply limit if specified (show most recent N items by ID)
+    # Apply limit if specified (show most recent N items by created timestamp)
     total_open = len(all_open)
     if limit and limit < total_open:
-        # Sort by numeric ID descending to get most recent, take first N
-        def id_num(h):
-            return int(h.id[1:]) if h.id[1:].isdigit() else 0
-        recent = sorted(all_open, key=id_num, reverse=True)[:limit]
+        # Sort by created timestamp descending to get most recent, take first N
+        recent = sorted(all_open, key=lambda h: h.created or "", reverse=True)[:limit]
         # Then sort by priority for display
         open_hyps = sorted(recent, key=lambda h: (h.priority or 999, h.id))
     else:

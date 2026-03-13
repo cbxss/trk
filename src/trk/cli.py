@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import re
 import sys  # noqa: F401 (used by qbulk stdin)
-from datetime import date
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
@@ -20,7 +20,7 @@ app = typer.Typer(
 
 
 def _today() -> str:
-    return date.today().isoformat()
+    return datetime.now().isoformat(timespec='seconds')
 
 
 def _get(target: Optional[str]) -> TrackingState:
