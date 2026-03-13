@@ -71,6 +71,9 @@ State: `~/.local/share/trk/<target>.json`
 Use `--link` to symlink `./state.json` in your project:
 ```bash
 trk init <target> --link
+
+# Add to your .gitignore:
+echo "state.json" >> .gitignore
 ```
 
 ## Example Workflow
