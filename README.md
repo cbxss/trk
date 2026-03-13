@@ -2,8 +2,6 @@
 
 Generic work tracker - adapt to any domain via skills.
 
-Short, fast, domain-agnostic. Based on the [pi-autoresearch](https://github.com/davebcn87/pi-autoresearch) pattern.
-
 ## Install
 
 ```bash
