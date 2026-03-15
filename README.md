@@ -9,7 +9,7 @@ Generic work tracker - adapt to any domain via skills.
 uv tool install ~/Code/trk
 
 # Symlink trk-create skill (global)
-ln -sf ~/Code/trk/.agents/skills/trk-create ~/.pi/agent/skills/trk-create
+ln -sf ~/Code/trk/.agents/skills/trk-create ~/.agents/skills/trk-create
 ```
 
 ## Usage
