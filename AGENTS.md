@@ -7,7 +7,7 @@ Generic work tracker. Domain-agnostic CLI + project-local skills for vocabulary.
 ```bash
 uv run pytest tests/ -v                                             # Run 68 tests
 uv tool install --reinstall ~/Code/trk                               # Install CLI globally
-ln -sf ~/Code/trk/.agents/skills/trk-create ~/.pi/agent/skills/      # Symlink skill globally
+ln -sf ~/Code/trk/.agents/skills/trk-create ~/.agents/skills/        # Symlink skill globally
 ```
 
 ## Structure
@@ -47,7 +47,7 @@ type ISODate = str       # "2026-03-13T14:58:01"
 ## Domain Adaptation Pattern
 
 1. **Generic CLI** - `trk` works same for all domains
-2. **Global skill** - `~/.pi/agent/skills/trk-create/` asks questions
+2. **Global skill** - `~/.agents/skills/trk-create/` asks questions
 3. **Generated skill** - `.agents/skills/<domain>/SKILL.md` teaches vocabulary
 
 Agent reads generated skill → uses domain terms (hypothesis vs migration vs bug).
